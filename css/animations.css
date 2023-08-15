@@ -1,0 +1,165 @@
+/**************************************/
+/* animations.css                    */
+/* animation classes and definitons */
+/***********************************/
+
+/* used when zombies die */
+.explosion {
+	animation: zombie-attack 3s linear forwards, 
+			   zombie-shuffle 1.2s linear infinite alternate,
+			   explode .1s ease-in;
+}
+
+/* used to move zombies to the player */
+.attack {
+	animation: zombie-attack 3s linear forwards, 
+			   zombie-shuffle 1.2s linear infinite alternate;	
+}
+.attack-slow {
+	animation: zombie-attack 35s linear forwards, 
+			   zombie-shuffle 1.2s linear infinite alternate;	
+}
+
+/* used when a player is hit by a zombie */
+.injury {
+	animation: owie .3s ease-in-out 3;
+}
+
+/* used when the player dies */
+.death {
+	animation: die 2.75s ease-in forwards;
+}
+
+/* used for the game over modal */
+.slide-in {
+	animation: slide-in 5s ease-in forwards;
+}
+
+/* used on the game over text */
+.gg {
+	animation: game-over 2s 4s ease-in;
+}
+
+/**************************************/
+
+/* pauses all animations */
+.paused {
+	-webkit-animation-play-state: paused;
+	-moz-animation-play-state: paused;
+	-o-animation-play-state: paused; 
+	animation-play-state: paused;
+}
+
+/**************************************/
+
+/* moves the zombie to the center */
+@keyframes zombie-attack {
+	100% {
+		left: calc(50% - 2rem);
+		top: calc(50% - 2rem);
+	}
+}
+
+/* moves the zombie in a shuffling fashion */
+@keyframes zombie-shuffle {
+	0% {
+		-moz-transform: rotate(-7.5deg);
+		-webkit-transform: rotate(-7.5deg);
+		transform: rotate(-7.5deg);
+	}
+	100% {
+		-moz-transform: rotate(7.5deg);
+		-webkit-transform: rotate(7.5deg);
+		transform: rotate(7.5deg);
+	}
+}
+
+/* increases the size during an explosion */
+@keyframes explode {
+	0% {
+		-moz-transform: scale(1.0);
+		-webkit-transform: scale(1.0);
+		transform: scale(1.0);
+	}
+	100% {
+		-moz-transform: scale(2.0);
+		-webkit-transform: scale(2.0);
+		transform: scale(2.0);
+		z-index: 1111;
+	}
+}
+
+/* slowly moves the fog back and forth */
+@keyframes wafting-fog {
+	0% {
+		-moz-transform: translateX(0%);
+		-webkit-transform: translateX(0%);
+		transform: translateX(0%)
+ 	}
+  	100% {
+  		-moz-transform: translateX(-50%);
+  		-webkit-transform: translateX(-50%);
+  		transform: translateX(-50%);
+  	}
+}
+
+/* indicates player damage from a zombie attack */
+@keyframes owie {
+	0% {
+		filter: hue-rotate(250deg);
+		font-size: 3.05rem;
+	}
+	100% {
+		filter: hue-rotate(270deg);
+		font-size: 2.95rem;
+	}
+}
+
+/* indicates player damage from a zombie attack */
+@keyframes die {
+	0% {
+		filter: brightness(1);
+		-moz-transform: rotate(15deg);
+		-webkit-transform: rotate(15deg);
+		transform: rotate(15deg);
+	}
+	34% {
+		-moz-transform: rotate(-15deg);
+		-webkit-transform: rotate(-15deg);
+		transform: rotate(-15deg);	
+	}
+	67% {
+		-moz-transform: rotate(15deg);
+		-webkit-transform: rotate(15deg);
+		transform: rotate(15deg);
+	}
+	100% {
+		filter: brightness(0);
+		opacity: .5;
+	}
+}
+
+/* game over modal appearance */
+@keyframes slide-in {
+	0% {
+		top: 0;
+	}
+	100% {
+		top: calc(35% - 20px);
+	}
+}
+
+/* game over flavor */
+@keyframes game-over {
+	0% {
+		color: white;
+	}
+	50% {
+		color: #BB0D0D;
+	}
+	100% {
+		color: white;
+	}
+}
+
+/**************************************/

@@ -1,0 +1,50 @@
+/*****************************/
+/* modules.css              */
+/* component-level styling */
+/**************************/
+
+/* gun used by player */ 
+
+#gun-container {
+	font-size: 3rem;
+	position: absolute;
+	left: calc(50% - 1rem);
+	top: calc(50% - 2rem);
+	z-index: 111;
+	transform-origin: 20% 53%;
+}
+
+#gun {
+	position: relative;
+}
+
+/* 'bullet trails' */
+.shot {
+	padding: 0px;
+	margin: 0px;
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	z-index: 100; 
+	opacity: 1;
+	transition: opacity .01s ease-out;
+}
+
+/************************************************/
+
+/* zombie enemy */
+
+.zombie-container {
+	font-size: 3rem;
+	position: absolute;
+	display: inline-block;
+	z-index: 3;
+	transition: left 3s linear, top 3s linear;
+}
+
+.zombie {
+	position: relative;
+}
+
+
+/*****************************/
