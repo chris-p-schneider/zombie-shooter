@@ -1,8 +1,8 @@
 # zombie-shooter 💥🧟‍♂️🔫
 
-Simple point-and-click webpage zombie shooter, loosely inspired by [Deanimator](https://www.newgrounds.com/portal/view/237765), a flash game I played as a kid, and [Vampire Survivors](https://store.steampowered.com/app/1794680/Vampire_Survivors/), a fun rogue-lite on Steam. Coded in 1.5 days as a chill weekend project!
+Simple point-and-click webpage zombie shooter, loosely inspired by [Deanimator](https://www.newgrounds.com/portal/view/237765), a flash game I played as a kid, and [Vampire Survivors](https://store.steampowered.com/app/1794680/Vampire_Survivors/), a fun rogue-lite on Steam. Coded in 1.5 days as a chill weekend project! Try a live demo [here](https://htmlpreview.github.io/?https://github.com/chris-p-schneider/zombie-shooter/blob/main/index.html).
 
-![Zombie Shooter gameplay](https://github.com/chris-p-schneider/zombie-shooter/blob/img/zombie-shooter-gameplay.gif)
+![Zombie Shooter gameplay](https://github.com/chris-p-schneider/zombie-shooter/blob/main/img/documentation/zombie-shooter-gameplay.gif)
 
 # Highlights ✨
 * made with ♥ using HTML/CSS/vanilla JS
