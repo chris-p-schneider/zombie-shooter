@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- GOOGLE FONTS -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Rubik+Wet+Paint&display=swap" rel="stylesheet">
+
+	<!-- CSS -->
+	<style>
+		/**************************************/
+		/* animations.css                    */
+		/* animation classes and definitons */
+		/***********************************/
+
+		/* used when zombies die */
+		.explosion {
+			animation: zombie-attack 3s linear forwards, 
+					   zombie-shuffle 1.2s linear infinite alternate,
+					   explode .1s ease-in;
+		}
+
+		/* used to move zombies to the player */
+		.attack {
+			animation: zombie-attack 3s linear forwards, 
+					   zombie-shuffle 1.2s linear infinite alternate;	
+		}
+		.attack-slow {
+			animation: zombie-attack 35s linear forwards, 
+					   zombie-shuffle 1.2s linear infinite alternate;	
+		}
+
+		/* used when a player is hit by a zombie */
+		.injury {
+			animation: owie .3s ease-in-out 3;
+		}
+
+		/* used when the player dies */
+		.death {
+			animation: die 2.75s ease-in forwards;
+		}
+
+		/* used for the game over modal */
+		.slide-in {
+			animation: slide-in 5s ease-in forwards;
+		}
+
+		/* used on the game over text */
+		.gg {
+			animation: game-over 2s 4s ease-in;
+		}
+
+		/**************************************/
+
+		/* pauses all animations */
+		.paused {
+			-webkit-animation-play-state: paused;
+			-moz-animation-play-state: paused;
+			-o-animation-play-state: paused; 
+			animation-play-state: paused;
+		}
+
+		/**************************************/
+
+		/* moves the zombie to the center */
+		@keyframes zombie-attack {
+			100% {
+				left: calc(50% - 2rem);
+				top: calc(50% - 2rem);
+			}
+		}
+
+		/* moves the zombie in a shuffling fashion */
+		@keyframes zombie-shuffle {
+			0% {
+				-moz-transform: rotate(-7.5deg);
+				-webkit-transform: rotate(-7.5deg);
+				transform: rotate(-7.5deg);
+			}
+			100% {
+				-moz-transform: rotate(7.5deg);
+				-webkit-transform: rotate(7.5deg);
+				transform: rotate(7.5deg);
+			}
+		}
+
+		/* increases the size during an explosion */
+		@keyframes explode {
+			0% {
+				-moz-transform: scale(1.0);
+				-webkit-transform: scale(1.0);
+				transform: scale(1.0);
+			}
+			100% {
+				-moz-transform: scale(2.0);
+				-webkit-transform: scale(2.0);
+				transform: scale(2.0);
+				z-index: 1111;
+			}
+		}
+
+		/* slowly moves the fog back and forth */
+		@keyframes wafting-fog {
+			0% {
+				-moz-transform: translateX(0%);
+				-webkit-transform: translateX(0%);
+				transform: translateX(0%)
+		 	}
+		  	100% {
+		  		-moz-transform: translateX(-50%);
+		  		-webkit-transform: translateX(-50%);
+		  		transform: translateX(-50%);
+		  	}
+		}
+
+		/* indicates player damage from a zombie attack */
+		@keyframes owie {
+			0% {
+				filter: hue-rotate(250deg);
+				font-size: 3.05rem;
+			}
+			100% {
+				filter: hue-rotate(270deg);
+				font-size: 2.95rem;
+			}
+		}
+
+		/* indicates player damage from a zombie attack */
+		@keyframes die {
+			0% {
+				filter: brightness(1);
+				-moz-transform: rotate(15deg);
+				-webkit-transform: rotate(15deg);
+				transform: rotate(15deg);
+			}
+			34% {
+				-moz-transform: rotate(-15deg);
+				-webkit-transform: rotate(-15deg);
+				transform: rotate(-15deg);	
+			}
+			67% {
+				-moz-transform: rotate(15deg);
+				-webkit-transform: rotate(15deg);
+				transform: rotate(15deg);
+			}
+			100% {
+				filter: brightness(0);
+				opacity: .5;
+			}
+		}
+
+		/* game over modal appearance */
+		@keyframes slide-in {
+			0% {
+				top: 0;
+			}
+			100% {
+				top: calc(35% - 20px);
+			}
+		}
+
+		/* game over flavor */
+		@keyframes game-over {
+			0% {
+				color: white;
+			}
+			50% {
+				color: #BB0D0D;
+			}
+			100% {
+				color: white;
+			}
+		}
+
+		/***********************/
+		/* base.css           */
+		/* tag-level styling */
+		/********************/
+
+		html, body {
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+			background-color: black;
+
+			-webkit-user-select: none; /* Safari */
+			-ms-user-select: none; /* IE 10 and IE 11 */
+			user-select: none; /* Standard syntax */
+			
+			font-family: 'Rubik Wet Paint', cursive;
+		}
+
+		html, body, div {
+			margin: 0px;
+			padding: 0px;
+			position: relative;
+		}
+
+		body {
+			display: flex;
+			cursor: crosshair;
+		}
+
+		h1 {
+			font-size: 300%;
+			font-weight: 300;
+			line-height: 2.5rem;
+			margin: 0 0 1.5rem 0;
+		}
+
+		/*********************/
+		/* layout.css       */
+		/* layout elements */
+		/******************/
+
+		/* wafting fog overlay */
+		#fog {
+			position: absolute;
+			opacity: 0.8;
+			z-index: 5;
+			animation: wafting-fog 120s linear infinite alternate;
+		}
+
+		/* cracked earth background image */
+		#bg-image {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+
+			opacity: 0.9;
+			filter: brightness(0.5);
+			transition: filter 3s ease-in;
+			box-shadow: inset 0 0 100px black;
+			z-index: 1;
+		}
+
+		.fade-out {
+			filter: brightness(0.1) !important;
+		}
+
+		/************************************************/
+
+		/* status HUD at bottom */
+
+		#menu {
+			display: flex;
+			flex-flow: row nowrap;
+			justify-content: space-between;
+			align-items: center;
+
+			position: fixed;
+			bottom: 0px;
+			width: calc(100% - 40px);
+			height: 3rem;
+
+			padding: 5px 20px;
+			background-color: black;
+			opacity: .95;
+			z-index: 111;
+
+			font-size: 1.5rem;
+			color: white;
+		}
+
+		#count-container,
+		#score-container,
+		#time-container,
+		#health-container {
+			text-align: center;
+			width: 20%;
+		}
+
+		#health-container {
+			color: red;
+		}
+
+		#health {
+			color: #15d600;
+		}
+
+		/************************************************/
+
+		/* game over modal */
+
+		#modal {
+			display: flex;
+			flex-flow: column nowrap;
+			justify-content: center;
+			align-items: center;
+			align-content: center;
+
+			width: calc(65% - 40px - 15px);
+			height: calc(40% - 40px - 15px);
+			position: absolute;
+			left: calc(25% - 20px);
+
+			padding: 20px;
+			border: 7.5px solid black;
+			border-radius: 20px;
+
+			color: white;
+			background-color: #161616;
+			filter: drop-shadow(0 0 49px black);
+			opacity: .9;
+			z-index: 11111;
+
+			text-align: center;
+		}
+
+		#modal button {
+			padding: 10px 40px;
+			border-radius: 10px;
+			color: white;
+			background-color: #BB0D0D;
+			transition: background-color .5s ease-in;
+		}
+
+		#modal button:hover {
+			background-color: #E11C1C;
+		}
+
+		/*****************************/
+		/* modules.css              */
+		/* component-level styling */
+		/**************************/
+
+		/* gun used by player */ 
+
+		#gun-container {
+			font-size: 3rem;
+			position: absolute;
+			left: calc(50% - 1rem);
+			top: calc(50% - 2rem);
+			z-index: 111;
+			transform-origin: 20% 53%;
+		}
+
+		#gun {
+			position: relative;
+		}
+
+		/* 'bullet trails' */
+		.shot {
+			padding: 0px;
+			margin: 0px;
+			height: 100%;
+			width: 100%;
+			position: absolute;
+			z-index: 100; 
+			opacity: 1;
+			transition: opacity .01s ease-out;
+		}
+
+		/************************************************/
+
+		/* zombie enemy */
+
+		.zombie-container {
+			font-size: 3rem;
+			position: absolute;
+			display: inline-block;
+			z-index: 3;
+			transition: left 3s linear, top 3s linear;
+		}
+
+		.zombie {
+			position: relative;
+		}
+
+		</style>
+
+	<!-- FAVICON -->
+	<link rel="icon" type="image/x-icon" href="./img/zombie.svg">
+
+	<!-- TITLE -->
+	<title>Zombie Shooter</title>
+
+</head>
+<body>
+	<!-- BACKGROUND -->
+	<img id="bg-image" src="./img/bg.jpg">
+	<img id="fog" src="./img/fog.jpg">
+
+	<!-- PLAYER GUN -->
+	<div id="gun-container">
+		<span id="gun">🔫</span>
+	</div>
+
+	<!-- MENU -->
+	<div id="menu">
+		<div id="count-container">
+			🧟‍<span id="count">0</span></div>
+		<div id="score-container">
+			💀<span id="score">0</span></div>
+		<div id="time-container">
+			<span id="time">0:00</span></div>
+		<div id="health-container">
+			<span id="health">|||||</span></div>
+	</div>
+
+	<!-- JS -->
+	<script type="text/javascript">
+	
+		///////////////////////////////////////////////////////////////
+		// classes.js
+		// class game class definitions
+		///////////////////////////////////////////////////////////////
+
+		///////////////////////////////////////////////////////////////
+		// simple clock to count HH:MM:SS
+
+		class clock {
+			constructor() {
+				this.seconds = 0;
+				this.minutes = 0;
+				this.hours = 0;
+			}
+			incrementSeconds() {
+				if (this.seconds == 59) {
+					this.seconds = 0;
+					this.minutes += 1;
+					if (this.minutes == 59) {
+						this.hours += 1;
+						this.minutes = 0;
+					}
+				} else {
+					this.seconds += 1;
+				}
+			}
+			clockText() {
+				if (this.hours == 0) {
+					if (this.seconds <10) {
+						return `${this.minutes}:0${this.seconds}`;
+					} else {
+						return `${this.minutes}:${this.seconds}`;
+					}
+				} else {
+					if (this.seconds < 10) {
+						return `${this.hours}:${this.minutes}:0${this.seconds}`;
+					} else {
+						return `${this.hours}:${this.minutes}:${this.seconds}`;
+					}
+				}
+			}
+		}
+
+		///////////////////////////////////////////////////////////////
+		// class containing data used to play the game
+
+		class gameData {
+			constructor() {
+				this.windowX 	= 0;
+				this.windowY 	= 0;
+				this.mouseX 	= 0;
+				this.mouseY 	= 0;
+				this.score 		= 0;
+				this.health 	= 5;
+				this.zombies 	= 0;
+				this.difficulty = 1;
+				this.start;
+				this.end;
+				this.clock = new clock();
+			}
+			updateWindow(x, y) {
+				this.windowX 	= x;
+				this.windowY 	= y;
+			}
+			updateMouse(x, y) {
+				this.mouseX 	= x;
+				this.mouseY 	= y;
+			}
+			getDeltaX() {
+				return (this.mouseX - (this.windowX / 2));
+			}
+			getDeltaY() {
+				return (this.mouseY - (this.windowY / 2));
+			}
+			getOriginX() {
+				return (this.windowX / 2);
+			}
+			getOriginY() {
+				return (this.windowY / 2);
+			}
+		}
+
+		///////////////////////////////////////////////////////////////
+		// elements.js
+		// globals and html elements
+		///////////////////////////////////////////////////////////////
+
+		var gd = new gameData;
+		var spawnID;			// used for spawn interval
+		var timerID;			// used for clock interval
+
+		// HTML ELEMENTS
+		const body 	 = document.querySelector('body');
+		const gc 	 = document.querySelector('#gun-container');
+		const phb	 = gc.getBoundingClientRect();
+		const gun 	 = document.querySelector('#gun');
+		const count  = document.querySelector('#count');
+		const score  = document.querySelector('#score');
+		const time 	 = document.querySelector('#time');
+		const health = document.querySelector('#health');
+
+		const healthColors = ['#15d600', 	// green
+							  '#8de106', 	// lime
+							  '#f3d300', 	// yellow
+							  '#fd7600', 	// orange
+							  '#ff0000',	// red
+							  '#ff0000'];	// still red
+
+		///////////////////////////////////////////////////////////////
+		// functions.js
+		// function definitions
+		///////////////////////////////////////////////////////////////
+
+		// updates the window dimensions on load/resize
+		function updateDimensions() {
+			gd.updateWindow(window.innerWidth, window.innerHeight);
+		}
+
+		// converts mouse coordinates to degrees from origin
+		function mouseToDeg() {
+			let rad = Math.atan2(gd.getDeltaY(), gd.getDeltaX());
+			let deg = rad * (180 / Math.PI);
+			return deg;
+		}
+
+		// parses degrees to apply rotation styles to gun
+		function degToStyle(deg) {
+			deg = Number.parseFloat(deg - 180).toFixed(2);
+			return `transform: rotate(${deg}deg);`;
+		}
+
+		// rotates the gun on mouse move
+		function rotateGun() {
+			gc.setAttribute('style', degToStyle(mouseToDeg()));
+		}
+
+		// updates the mouse coordinates on mouse move
+		const updateMousePosition = (e) => {
+			gd.updateMouse(e.clientX, e.clientY);
+			rotateGun();
+		}
+
+		/* creates a yellow svg line */
+		function generateShot() {
+			let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+			svg.setAttribute('class', 'shot');
+			let line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+			line.setAttribute('x1', gd.mouseX);
+			line.setAttribute('y1', gd.mouseY);
+			line.setAttribute('x2', gd.getOriginX());
+			line.setAttribute('y2', gd.getOriginY());
+			line.setAttribute('style', 'stroke: hsla(50, 100%, 50%, 0.67); stroke-width: 3px;');
+			let circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+			circle.setAttribute('cx', gd.mouseX);
+			circle.setAttribute('cy', gd.mouseY);
+			circle.setAttribute('fill', 'red');
+			circle.setAttribute('r', 5);
+			circle.setAttribute('style', 'opacity: 0.33');
+			svg.appendChild(line);
+			svg.appendChild(circle);
+			// console.log(`(${gd.mouseX}, ${gd.mouseY}) | (${gd.getOriginX()}, ${gd.getOriginY()})`);
+			body.appendChild(svg);
+		}
+
+		/* updates the kill count in the menu */
+		function updateScore() {
+			gd.score += 1;
+			score.textContent = gd.score;
+		}
+
+		/* updates the current zombie count in the menu */
+		function updateCount(posNegOne) {
+			gd.zombies += posNegOne;
+			count.textContent = gd.zombies;
+		}
+
+		/* explodes zombie then removes it */
+		function killZombie(zContainer) {
+			zContainer.firstChild.textContent = '💥';
+			zContainer.setAttribute('class', 'zombie-container explosion');
+			setTimeout(() => {
+				zContainer.remove();
+			}, 100);
+			updateCount(-1);
+			updateScore();
+		}
+
+		/* checks if the shot hit the zombie
+			then kills it and updates the counts */
+		function checkZombiesHit(hitbox) {
+			const zombies = document.querySelectorAll('.zombie-container');
+			// console.log('hitbox: ', hitbox);
+			zombies.forEach((z) => {
+				let zBox = z.getBoundingClientRect();
+				if (
+					((hitbox.top > zBox.top && hitbox.top < zBox.bottom)
+						&& ((hitbox.right < zBox.right && hitbox.right > zBox.left)
+							|| (hitbox.left > zBox.left && hitbox.left < zBox.right)
+					)) // bottom hitboxes
+					&& 
+					((hitbox.bottom < zBox.bottom && hitbox.bottom > zBox.top)
+						&& ((hitbox.right > zBox.left && hitbox.right < zBox.right)
+							|| (hitbox.left < zBox.right && hitbox.left > zBox.left)
+					))
+					) { // top hitboxes
+					// console.log('zBox: ', zBox);
+					killZombie(z);
+				}
+			});
+		}
+
+		/* shows game over and reloads on button click */
+		function renderGameOverModal() {
+			const modal = document.createElement('div');
+			modal.setAttribute('id', 'modal');
+			modal.setAttribute('class', 'slide-in');
+			const h1 = document.createElement('h1');
+			h1.setAttribute('class', 'gg');
+			h1.textContent = 'Game Over';
+			const button = document.createElement('button');
+			button.textContent = 'Try Again?';
+			button.addEventListener('click', () => {
+				window.location.reload();
+			});
+			modal.appendChild(h1);
+			modal.appendChild(button);
+			body.appendChild(modal);
+		}
+
+		/* pauses everything and renders the end game modal */
+		function endGame() {
+			clearInterval(spawnID);
+			clearInterval(timerID);
+			removeEventListener('click', shootGun);
+			removeEventListener('mousemove', updateMousePosition);
+			gun.setAttribute('class', 'death');
+			const zombies = document.querySelectorAll('.zombie-container');
+			zombies.forEach((z) => {
+				z.setAttribute('class', 'zombie-container attack-slow');
+			});
+			gd.end = new Date().getTime();
+			document.querySelector('#bg-image').setAttribute('class', 'fade-out');
+			body.style.cursor = 'auto';
+			renderGameOverModal();
+		}
+
+		/* updates health count/style in menu */
+		function decrementHealth() {
+			gd.health -= 1;
+			let bars = health.textContent;
+			let newBars = bars.slice(0, gd.health);
+			health.textContent = newBars;
+			health.setAttribute('style', 
+				`color: ${healthColors[(5 - gd.health)]}`);
+		}
+
+		/* decrements health, animates injury,
+			checks loss condition */
+		function injurePlayer() {
+			decrementHealth();
+			if (gd.health == 0) {
+				health.textContent = '☠';
+				endGame();
+			} else {
+				gun.setAttribute('class', 'injury');
+				setTimeout(() => {
+					gun.classList.remove('injury');
+				}, 500);
+			}
+		}
+
+		/* checks if zombie hit player,
+			lowers health, animates, checks loss */
+		function checkPlayerHit() {
+			const zombies = document.querySelectorAll('.zombie-container');
+			zombies.forEach((z) => {
+				let zBox = z.getBoundingClientRect();
+				if (
+					((phb.top > zBox.top && phb.top < zBox.bottom)
+						&& ((phb.right < zBox.right && phb.right > zBox.left)
+							|| (phb.left > zBox.left && phb.left < zBox.right)
+					)) // bottom hitboxes
+					&& 
+					((phb.bottom < zBox.bottom && phb.bottom > zBox.top)
+						&& ((phb.right > zBox.left && phb.right < zBox.right)
+							|| (phb.left < zBox.right && phb.left > zBox.left)
+					))
+					) { // top hitboxes
+					injurePlayer();
+				}
+			});
+		}
+
+		/* creates shot, checks hit, removes shot */
+		function shootGun() {
+			generateShot();
+			const shot = document.querySelector('.shot');
+			const circle = document.querySelector('circle');
+			let hitbox = circle.getBoundingClientRect();
+			checkZombiesHit(hitbox);
+			setTimeout(() => {
+				shot.remove();
+			}, 100);
+		}
+
+		/* generates a random start along the edges */
+		function zombieSpawnPosition() {
+			let left, top = 0;
+			if (Math.random() <= 0.5) {
+				left = Math.floor(Math.random() * 91) + 10;
+				if (Math.random() <= 0.5) {
+					top = 0;
+				} else {
+					top = 90;
+				}
+			} else {
+				top = Math.floor(Math.random() * 91) + 10;
+				if (Math.random() <= 0.5) {
+					left = 0;
+				} else {
+					left = 90;
+				}
+			}
+			return `left: ${left}vw; top: ${top}vh;`
+		}
+
+		/* creates a zombie and updates count */
+		function spawnZombie() {
+			let zContainer = document.createElement('div');
+			zContainer.setAttribute('class', 'zombie-container');
+			zContainer.setAttribute('style', `${zombieSpawnPosition()}`);
+			let zombie = document.createElement('span');
+			zombie.setAttribute('class', 'zombie');
+			if (Math.random() <= 0.5) {
+				zombie.textContent = '🧟‍♂️';
+			} else {
+				zombie.textContent = '🧟‍♀️';
+			}
+			zContainer.appendChild(zombie);
+			body.appendChild(zContainer);
+			zContainer.setAttribute('class', 'zombie-container attack');
+			updateCount(1);
+		}
+
+		function increaseDifficulty() {
+			if (gd.clock.minutes >= 1 && gd.difficulty == 3) {
+				clearInterval(spawnID);
+				spawnID = setInterval(spawnZombie, 50);			
+				gd.difficulty += 1;
+			} else if (gd.clock.seconds >= 30 && gd.difficulty == 2) {
+				clearInterval(spawnID);
+				spawnID = setInterval(spawnZombie, 150);
+				gd.difficulty += 1;
+			} else if (gd.clock.seconds >= 15 && gd.difficulty == 1) {
+				clearInterval(spawnID);
+				spawnID = setInterval(spawnZombie, 250);
+				gd.difficulty += 1;
+			}
+		}
+
+		/* starts the game's clock */
+		function startTimer() {
+			gd.start = new Date().getTime();
+			timerID = setInterval(() => {
+				gd.clock.incrementSeconds();
+				time.textContent = gd.clock.clockText();
+				checkPlayerHit();
+				increaseDifficulty()
+			}, 1000);
+		}
+
+		///////////////////////////////////////////////////////////////
+		// events.js
+		// main game event triggers
+		///////////////////////////////////////////////////////////////
+
+		addEventListener('load', () => {
+			updateDimensions();
+			startTimer();
+		});
+
+		addEventListener('resize', updateDimensions);
+
+		addEventListener('mousemove', updateMousePosition);
+
+		addEventListener('click', shootGun);
+
+		spawnID = setInterval(spawnZombie, 500);
+
+	</script>
+
+
+</body>
+</html>
