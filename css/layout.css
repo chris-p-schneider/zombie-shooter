@@ -106,6 +106,7 @@
 #modal button {
 	padding: 10px 40px;
 	border-radius: 10px;
+	font-size: 28px;
 	color: white;
 	background-color: #BB0D0D;
 	transition: background-color .5s ease-in;
