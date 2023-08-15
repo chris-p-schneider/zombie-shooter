@@ -302,7 +302,7 @@
 			width: calc(65% - 40px - 15px);
 			height: calc(40% - 40px - 15px);
 			position: absolute;
-			left: calc(25% - 20px);
+			left: calc(20% - 20px);
 
 			padding: 20px;
 			border: 7.5px solid black;
@@ -376,6 +376,50 @@
 
 		.zombie {
 			position: relative;
+		}
+
+		/*******************/
+		/* media.css      */
+		/*  @media rules */
+		/****************/
+
+		/* tablets i guess */
+
+		@media screen and (max-width: 720px) {
+		  html {
+		  	font-size: 24px;
+		  }
+		  h1 {
+		  	font-size: 200%;
+		  }
+		  #modal {
+		  	width: calc(70% - 40px - 15px);
+		  	left: calc(20% - 20px);
+		  }
+
+		  #modal button {
+		  	font-size: 18px;
+		  }
+		}
+
+		/***********************************************/
+		/* hilariously small screens */
+
+		@media screen and (max-width: 420px) {
+		  html {
+		  	font-size: 18px;
+		  }
+		  h1 {
+		  	font-size: 175%;
+		  }
+		  #modal {
+		  	width: calc(70% - 40px - 15px);
+		  	left: calc(20% - 20px);
+		  }
+
+		  #modal button {
+		  	font-size: 18px;
+		  }
 		}
 
 		</style>

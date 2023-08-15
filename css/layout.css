@@ -85,10 +85,10 @@
 	align-items: center;
 	align-content: center;
 
-	width: calc(65% - 40px - 15px);
+	width: calc(50% - 40px - 15px);
 	height: calc(40% - 40px - 15px);
 	position: absolute;
-	left: calc(25% - 20px);
+	left: calc(30% - 20px);
 
 	padding: 20px;
 	border: 7.5px solid black;

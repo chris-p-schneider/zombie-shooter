@@ -1,0 +1,45 @@
+/*******************/
+/* media.css      */
+/*  @media rules */
+/****************/
+
+/* tablets i guess */
+
+@media screen and (max-width: 720px) {
+  html {
+  	font-size: 24px;
+  }
+  h1 {
+  	font-size: 200%;
+  }
+  #modal {
+  	width: calc(70% - 40px - 15px);
+  	left: calc(20% - 20px);
+  }
+
+  #modal button {
+  	font-size: 18px;
+  }
+}
+
+/***********************************************/
+/* hilariously small screens */
+
+@media screen and (max-width: 420px) {
+  html {
+  	font-size: 18px;
+  }
+  h1 {
+  	font-size: 175%;
+  }
+  #modal {
+  	width: calc(70% - 40px - 15px);
+  	left: calc(20% - 20px);
+  }
+
+  #modal button {
+  	font-size: 18px;
+  }
+}
+
+/***********************************************/

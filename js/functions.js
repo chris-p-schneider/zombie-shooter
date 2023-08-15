@@ -41,7 +41,7 @@ function generateShot() {
 	line.setAttribute('y1', gd.mouseY);
 	line.setAttribute('x2', gd.getOriginX());
 	line.setAttribute('y2', gd.getOriginY());
-	line.setAttribute('style', 'stroke: hsla(50, 100%, 50%, 0.67); stroke-width: 3px;');
+	line.setAttribute('style', 'stroke: hsla(50, 100%, 50%, 0.67); stroke-width: 7px;');
 	let circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
 	circle.setAttribute('cx', gd.mouseX);
 	circle.setAttribute('cy', gd.mouseY);
@@ -50,7 +50,6 @@ function generateShot() {
 	circle.setAttribute('style', 'opacity: 0.33');
 	svg.appendChild(line);
 	svg.appendChild(circle);
-	// console.log(`(${gd.mouseX}, ${gd.mouseY}) | (${gd.getOriginX()}, ${gd.getOriginY()})`);
 	body.appendChild(svg);
 }
 
@@ -81,7 +80,6 @@ function killZombie(zContainer) {
 	then kills it and updates the counts */
 function checkZombiesHit(hitbox) {
 	const zombies = document.querySelectorAll('.zombie-container');
-	// console.log('hitbox: ', hitbox);
 	zombies.forEach((z) => {
 		let zBox = z.getBoundingClientRect();
 		if (
@@ -95,7 +93,6 @@ function checkZombiesHit(hitbox) {
 					|| (hitbox.left < zBox.right && hitbox.left > zBox.left)
 			))
 			) { // top hitboxes
-			// console.log('zBox: ', zBox);
 			killZombie(z);
 		}
 	});
